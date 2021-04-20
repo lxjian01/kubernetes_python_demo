@@ -15,6 +15,7 @@ class Deployment():
         self.deployment = deployment
         self.namespace = namespace
         self.body = self.get_body(yaml_file)
+        self.k8s_apps_v1 = client.AppsV1Api()
 
     def get_body(self,yaml_file):
         """
@@ -26,14 +27,26 @@ class Deployment():
             body = yaml.safe_load(f)
             return body
 
-    def patch(self):
-        print("starting......")
-        k8s_apps_v1 = client.AppsV1Api()
-        resp = k8s_apps_v1.patch_namespaced_deployment(self.deployment,self.namespace,self.body)
-        print("Deployment created. status='%s'" % resp.metadata.name)
-
     def create(self):
         print("starting......")
-        k8s_apps_v1 = client.AppsV1Api()
-        resp = k8s_apps_v1.patch_namespaced_deployment(self.deployment, self.namespace, self.body)
+        try:
+            resp = self.k8s_apps_v1.patch_namespaced_deployment(self.deployment, self.namespace, self.body)
+        except Exception as ex:
+            raise ex
         print("Deployment created. status='%s'" % resp.metadata.name)
+
+    def patch(self):
+        print("starting......")
+        try:
+            resp = self.k8s_apps_v1.patch_namespaced_deployment(self.deployment, self.namespace, self.body)
+        except Exception as ex:
+            raise ex
+        print("Deployment patch. status='%s'" % resp.metadata.name)
+
+    def delete(self):
+        print("starting......")
+        try:
+            resp = self.k8s_apps_v1.delete_namespaced_deployment(self.deployment,self.namespace)
+        except Exception as ex:
+            raise ex
+        print("Deployment delete. status='%s'" % resp.metadata.name)
