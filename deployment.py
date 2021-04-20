@@ -15,7 +15,13 @@ class Deployment():
         self.deployment = deployment
         self.namespace = namespace
         self.body = self.get_body(yaml_file)
-        self.k8s_apps_v1 = client.AppsV1Api()
+        self._k8s_apps_v1 = None
+
+    @property
+    def k8s_apps_v1(self):
+        if self._k8s_apps_v1 is None:
+            self._k8s_apps_v1= client.AppsV1Api()
+        return self._k8s_apps_v1
 
     def get_body(self,yaml_file):
         """
@@ -30,7 +36,7 @@ class Deployment():
     def create(self):
         print("starting......")
         try:
-            resp = self.k8s_apps_v1.patch_namespaced_deployment(self.deployment, self.namespace, self.body)
+            resp = self.k8s_apps_v1.create_namespaced_deployment(self.namespace, self.body)
         except Exception as ex:
             raise ex
         print("Deployment created. status='%s'" % resp.metadata.name)

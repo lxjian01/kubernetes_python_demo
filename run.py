@@ -3,6 +3,7 @@ from os import path
 from kubernetes import client, config, watch
 
 from deployment import Deployment
+from pod import Pod
 
 config.load_kube_config()
 
@@ -16,6 +17,10 @@ if __name__ == '__main__':
     yaml_file = "yamls/deployments/nginx-deployment.yaml"
     yaml_file_path = path.join(path.dirname(__file__), yaml_file)
     deployment = Deployment("nginx-deployment","default",yaml_file_path)
-    deployment.delete()
+    deployment.create()
+    # deployment.patch()
+    # deployment.delete()
+    pods = Pod()
+    pods.get_pods()
 
 
