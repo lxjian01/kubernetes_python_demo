@@ -17,7 +17,7 @@ if __name__ == '__main__':
     yaml_file = "yamls/deployments/nginx-deployment.yaml"
     yaml_file_path = path.join(path.dirname(__file__), yaml_file)
     deployment = Deployment("nginx-deployment","default",yaml_file_path)
-    deployment.create()
+    deployment.patch()
     # deployment.patch()
     # deployment.delete()
     pods = Pod()
